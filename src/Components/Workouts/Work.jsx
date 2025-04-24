@@ -24,7 +24,7 @@ const Work = ({ posts }) => {
                     <div className="p-6">
                         <h1 className="text-xl font-bold text-white text-center mb-2">{post.title}</h1>
                         <p className="text-white text-center">{post.description}</p>
-                        <p className="mt-8 text-center tex-white hover:text-blue-100 underline"><Link to="/">see more</Link> </p>
+                        <p className="mt-8 text-center tex-white hover:text-blue-100 underline"><Link to="/AllExercise">see more</Link> </p>
                     </div>
                 </div>
             ))}
