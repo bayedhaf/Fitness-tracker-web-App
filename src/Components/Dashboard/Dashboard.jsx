@@ -10,7 +10,7 @@ const Dashboard = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   
                   <div className="bg-white p-6 rounded-lg shadow">
-                    <h2 className="text-xl font-semibold mb-2">Workout Summary</h2>
+                    <h2 className="text-xl font-semibold mb-2">workout</h2>
                     <p>Your recent workout statistics...</p>
                   </div>
                   <div className="bg-white p-6 rounded-lg shadow">
