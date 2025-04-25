@@ -20,7 +20,7 @@ const Profile = () => {
 
   const fetchProfile = async () => {
     try {
-      const response = await axios.get('https://randomuser.me/api/');
+      const response = await axios.get('https://exercises11.p.rapidapi.com/data.json');
       const userData = response.data.results[0];
       const newProfile = {
         name: `${userData.name.first} ${userData.name.last}`,
