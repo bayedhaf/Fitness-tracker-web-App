@@ -42,7 +42,7 @@ const Login = () => {
 
       setSuccess('Login successful! Redirecting to your profile...');
       setTimeout(() => {
-        navigate(`/profile/${response.data.id}`);
+        navigate(`/Profile/${response.data.id}`);
       }, 1000);
     } catch (error) {
       setError(error.response?.data?.message || 'Failed to log in. Please try again.');

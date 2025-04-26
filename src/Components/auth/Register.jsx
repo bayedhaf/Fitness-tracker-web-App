@@ -20,7 +20,7 @@ const Register = () => {
   const [success, setSuccess] = useState(null);
   const fileInputRef = useRef(null);
 
-  const API_URL = 'http://localhost:3001/users'; // Replace with your actual endpoint (e.g., 'https://dummyjson.com/c/1fe2-1df3-4477-80fb')
+  const API_URL = 'http://localhost:3001/users'; 
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -241,7 +241,7 @@ const Register = () => {
         </form>
         <p className="text-center text-white mt-8">
           If you already have an account, go to{' '}
-          <Link className="pl-1 text-blue-300 underline" to="/login">
+          <Link className="pl-1 text-blue-300 underline" to="/Login">
             Login
           </Link>
         </p>
