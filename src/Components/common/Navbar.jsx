@@ -13,7 +13,8 @@ const Navbar = () => {
     { name: 'Progress', path: '/Progress' },
     { name: 'Nutrition',path: '/Nutrition' },
     { name: 'Profile', path: '/Profile' },
-    { name: 'Contact', path: '/Contact' }
+    { name: 'Register', path: '/Register' },
+    { name: 'Login', path: '/Login' }
   ];
 
   return (

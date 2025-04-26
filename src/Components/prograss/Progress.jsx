@@ -16,7 +16,7 @@ const Progress= () => {
       try {
         setLoading(true);
         
-        const response = await fetch('https://exercises11.p.rapidapi.com/data.json');
+        const response = await fetch('https://dummyjson.com/c/2223-8627-4246-ba47');
         
         if (!response.ok) {
           throw new Error('Failed to fetch progress data');

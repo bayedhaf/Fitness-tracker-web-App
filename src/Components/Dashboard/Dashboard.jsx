@@ -16,7 +16,7 @@ const Dashboard = () => {
       try {
         setLoading(true);
        
-        const response = await fetch('https://fakestoreapi.com/products?limit=20');
+        const response = await fetch('https://dummyjson.com/c/4d64-0d33-4063-a4f6');
         
         if (!response.ok) {
           throw new Error('Failed to fetch dashboard data');
