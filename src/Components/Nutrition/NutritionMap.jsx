@@ -1,6 +1,6 @@
 const NutritionMap = ({ posts }) => {
    return (
-       <div className=" mb-0 pb-10 bg-[linear-gradient(45deg,black_0%,white_400%)] h-full w-full pt-28  gap-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 px-4 sm:px-8 md:px-12 lg:px-16 transition-all duration-300">
+       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
            {posts.map((post, index) => (
                <div 
                    key={post.id} 
