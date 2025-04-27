@@ -16,7 +16,7 @@ const Dashboard = () => {
       try {
         setLoading(true);
        
-        const response = await fetch('https://dummyjson.com/c/4d64-0d33-4063-a4f6');
+        const response = await fetch('https://dummyjson.com/c/613b-73e3-41f2-b0fa');
         
         if (!response.ok) {
           throw new Error('Failed to fetch dashboard data');

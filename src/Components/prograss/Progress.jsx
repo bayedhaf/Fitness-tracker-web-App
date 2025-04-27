@@ -16,7 +16,7 @@ const Progress= () => {
       try {
         setLoading(true);
         
-        const response = await fetch('https://dummyjson.com/c/2223-8627-4246-ba47');
+        const response = await fetch('https://dummyjson.com/c/9d60-56fe-47e6-8fe9');
         
         if (!response.ok) {
           throw new Error('Failed to fetch progress data');
@@ -52,7 +52,7 @@ const Progress= () => {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-100">
+      <div className="flex mt-28 items-center justify-center h-screen bg-gray-100">
         <div className="text-center p-6 bg-white rounded-lg shadow-md max-w-md">
           <div className="text-red-500 text-4xl mb-4">⚠️</div>
           <h3 className="text-xl font-bold text-gray-800 mb-2">Error Loading Progress Data</h3>
