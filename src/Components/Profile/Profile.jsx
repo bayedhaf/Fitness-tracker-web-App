@@ -21,7 +21,7 @@ const Profile = () => {
   const fileInputRef = useRef(null);
 
   const { id } = useParams(); 
-  const API_BASE_URL = 'https://dummyjson.com/c/1445-2c80-484e-9835';
+  const API_BASE_URL = 'http://localhost:8000/profile.php';
   const PROFILE_ENDPOINT = `${API_BASE_URL}`;
 
   useEffect(() => {
@@ -32,7 +32,10 @@ const Profile = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await axios.get(`${PROFILE_ENDPOINT}/${id}`);
+      const response = await axios.get(`${PROFILE_ENDPOINT}/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }});
       setProfile(response.data);
       setFormData(response.data);
       setPreviewImage(response.data.image);
@@ -98,6 +101,8 @@ const Profile = () => {
       const response = await axios.put(`${PROFILE_ENDPOINT}/${id}`, updatedData, {
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        
         },
       });
 

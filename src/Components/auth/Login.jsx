@@ -12,7 +12,7 @@ const Login = () => {
   const [success, setSuccess] = useState(null);
   const navigate = useNavigate();
 
-  const API_BASE_URL = 'https://dummyjson.com/c/1445-2c80-484e-9835';
+  const API_BASE_URL = 'http://localhost:8080/login.php';
 
   const handleSubmit = async (e) => {
     e.preventDefault();

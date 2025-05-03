@@ -18,9 +18,10 @@ const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [fieldErrors, setFieldErrors] = useState({});
   const fileInputRef = useRef(null);
 
-  const API_URL = 'http://localhost:3001/users'; 
+  const API_URL = 'http://localhost:8080/register.php';
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -51,6 +52,9 @@ const Register = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (fieldErrors[name]) {
+      setFieldErrors(prev => ({ ...prev, [name]: '' }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -58,70 +62,62 @@ const Register = () => {
     setIsLoading(true);
     setError(null);
     setSuccess(null);
-
-    const { firstName, lastName, email, password, age, weight, height } = formData;
-
-    if (!firstName || !lastName || !email || !password || !age || !weight || !height) {
-      setError('Please fill all required fields');
-      setIsLoading(false);
-      return;
-    }
-
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      setError('Invalid email format');
-      setIsLoading(false);
-      return;
-    }
-
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters');
-      setIsLoading(false);
-      return;
-    }
+    setFieldErrors({});
 
     try {
-      const response = await axios.post(
-        API_URL,
-        {
-          firstName,
-          lastName,
-          email,
-          password,
-          age: Number(age),
-          weight: Number(weight),
-          height: Number(height),
-          image: formData.image || 'https://i.pravatar.cc/300',
+      const response = await axios.post(API_URL, JSON.stringify(formData), {
+        headers: {
+          'Content-Type': 'application/json',
         },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      setSuccess('Registration successful! Redirecting to login...');
-      setTimeout(() => {
-        navigate('/Login');
-      }, 1000);
-
-      
-      setFormData({
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: '',
-        age: '',
-        weight: '',
-        height: '',
-        image: '',
       });
-      setPreviewImage('');
-      fileInputRef.current.value = '';
+
+      if (response.data.success) {
+        setSuccess('Registration successful! Redirecting to login...');
+        setTimeout(() => navigate('/Login'), 1500);
+        resetForm();
+      } else {
+        handleResponseErrors(response);
+      }
     } catch (err) {
-      console.error(err);
-      setError(err.response?.data?.message || 'Registration failed. Try again.');
+      handleRequestErrors(err);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      age: '',
+      weight: '',
+      height: '',
+      image: '',
+    });
+    setPreviewImage('');
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const handleResponseErrors = (response) => {
+    if (response.data.errors) {
+      setFieldErrors(response.data.errors);
+      setError('Please fix the form errors');
+    } else {
+      setError(response.data.message || 'Registration failed');
+    }
+  };
+
+  const handleRequestErrors = (err) => {
+    console.error('Registration error:', err);
+    if (err.response?.data?.errors) {
+      setFieldErrors(err.response.data.errors);
+      setError('Please fix the form errors');
+    } else if (err.code === 'ERR_NETWORK') {
+      setError('Cannot connect to server. Please try again later.');
+    } else {
+      setError(err.response?.data?.message || 'Registration failed. Please try again.');
     }
   };
 
@@ -130,8 +126,20 @@ const Register = () => {
       <div className="max-w-md mx-auto bg-gray-800 p-8 rounded-xl shadow-md">
         <h2 className="text-white text-3xl font-bold text-center mb-6">Register</h2>
 
-        {error && <div className="bg-red-500 text-white p-3 rounded mb-4">{error}</div>}
-        {success && <div className="bg-green-500 text-white p-3 rounded mb-4">{success}</div>}
+        {error && (
+          <div className="bg-red-500 text-white p-3 rounded mb-4">
+            {error}
+            {Object.entries(fieldErrors).map(([field, message]) => (
+              <p key={field} className="text-sm mt-1">{message}</p>
+            ))}
+          </div>
+        )}
+
+        {success && (
+          <div className="bg-green-500 text-white p-3 rounded mb-4">
+            {success}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="flex flex-col items-center">
@@ -159,74 +167,88 @@ const Register = () => {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
+            <div>
+              <input
+                type="text"
+                name="firstName"
+                placeholder="First Name"
+                value={formData.firstName}
+                onChange={handleChange}
+                required
+                className={`w-full p-3 rounded bg-gray-700 text-white border ${fieldErrors.firstName ? 'border-red-500' : 'border-gray-600'}`}
+              />
+            </div>
+            <div>
+              <input
+                type="text"
+                name="lastName"
+                placeholder="Last Name"
+                value={formData.lastName}
+                onChange={handleChange}
+                required
+                className={`w-full p-3 rounded bg-gray-700 text-white border ${fieldErrors.lastName ? 'border-red-500' : 'border-gray-600'}`}
+              />
+            </div>
+          </div>
+
+          <div>
             <input
-              type="text"
-              name="firstName"
-              placeholder="First Name"
-              value={formData.firstName}
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={formData.email}
               onChange={handleChange}
               required
-              className="p-3 rounded bg-gray-700 text-white border border-gray-600"
-            />
-            <input
-              type="text"
-              name="lastName"
-              placeholder="Last Name"
-              value={formData.lastName}
-              onChange={handleChange}
-              required
-              className="p-3 rounded bg-gray-700 text-white border border-gray-600"
+              className={`w-full p-3 rounded bg-gray-700 text-white border ${fieldErrors.email ? 'border-red-500' : 'border-gray-600'}`}
             />
           </div>
 
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            className="w-full p-3 rounded bg-gray-700 text-white border border-gray-600"
-          />
-
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-            className="w-full p-3 rounded bg-gray-700 text-white border border-gray-600"
-          />
+          <div>
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              className={`w-full p-3 rounded bg-gray-700 text-white border ${fieldErrors.password ? 'border-red-500' : 'border-gray-600'}`}
+            />
+          </div>
 
           <div className="grid grid-cols-3 gap-3">
-            <input
-              type="number"
-              name="age"
-              placeholder="Age"
-              value={formData.age}
-              onChange={handleChange}
-              required
-              className="p-3 rounded bg-gray-700 text-white border border-gray-600"
-            />
-            <input
-              type="number"
-              name="weight"
-              placeholder="Weight (kg)"
-              value={formData.weight}
-              onChange={handleChange}
-              required
-              className="p-3 rounded bg-gray-700 text-white border border-gray-600"
-            />
-            <input
-              type="number"
-              name="height"
-              placeholder="Height (cm)"
-              value={formData.height}
-              onChange={handleChange}
-              required
-              className="p-3 rounded bg-gray-700 text-white border border-gray-600"
-            />
+            <div>
+              <input
+                type="number"
+                name="age"
+                placeholder="Age"
+                value={formData.age}
+                onChange={handleChange}
+                required
+                className={`w-full p-3 rounded bg-gray-700 text-white border ${fieldErrors.age ? 'border-red-500' : 'border-gray-600'}`}
+              />
+            </div>
+            <div>
+              <input
+                type="number"
+                name="weight"
+                placeholder="Weight (kg)"
+                value={formData.weight}
+                onChange={handleChange}
+                required
+                className={`w-full p-3 rounded bg-gray-700 text-white border ${fieldErrors.weight ? 'border-red-500' : 'border-gray-600'}`}
+              />
+            </div>
+            <div>
+              <input
+                type="number"
+                name="height"
+                placeholder="Height (cm)"
+                value={formData.height}
+                onChange={handleChange}
+                required
+                className={`w-full p-3 rounded bg-gray-700 text-white border ${fieldErrors.height ? 'border-red-500' : 'border-gray-600'}`}
+              />
+            </div>
           </div>
 
           <button
@@ -240,9 +262,9 @@ const Register = () => {
           </button>
         </form>
         <p className="text-center text-white mt-8">
-          If you already have an account, go to{' '}
-          <Link className="pl-1 text-blue-300 underline" to="/Login">
-            Login
+          Already have an account?{' '}
+          <Link className="text-blue-300 underline" to="/Login">
+            Login here
           </Link>
         </p>
       </div>
