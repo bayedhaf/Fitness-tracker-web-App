@@ -47,7 +47,7 @@ const Login = () => {
         const jsonStart = response.data.indexOf('{');
         const jsonEnd = response.data.lastIndexOf('}') + 1;
         responseData = JSON.parse(response.data.slice(jsonStart, jsonEnd));
-      } catch (parseError) {
+      } catch (Error) {
         console.error('Failed to parse response:', response.data);
         throw new Error('Invalid server response format');
       }
@@ -89,7 +89,7 @@ const Login = () => {
           const jsonEnd = error.response.data.lastIndexOf('}') + 1;
           const errorData = JSON.parse(error.response.data.slice(jsonStart, jsonEnd));
           errorMessage = errorData.message || errorMessage;
-        } catch (e) {
+        } catch (error) {
           errorMessage = `Server error: ${error.response.status}`;
         }
       } else if (error.message) {
