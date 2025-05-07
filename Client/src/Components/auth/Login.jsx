@@ -40,10 +40,8 @@ const Login = () => {
         }
       );
 
-      // Clean up the response data by removing PHP warnings
       let responseData;
       try {
-        // Find the JSON part in the response (after PHP warnings)
         const jsonStart = response.data.indexOf('{');
         const jsonEnd = response.data.lastIndexOf('}') + 1;
         responseData = JSON.parse(response.data.slice(jsonStart, jsonEnd));
@@ -56,13 +54,13 @@ const Login = () => {
         throw new Error('Authentication token missing in response');
       }
 
-      // Extract user ID - handling both object and string formats
+    
       let userId;
       if (responseData.data?.id) {
         if (typeof responseData.data.id === 'object' && responseData.data.id.oid) {
-          userId = responseData.data.id.oid; // MongoDB ObjectId format
+          userId = responseData.data.id.oid; 
         } else {
-          userId = responseData.data.id; // String format
+          userId = responseData.data.id; 
         }
       }
 
@@ -70,7 +68,7 @@ const Login = () => {
         console.warn('User ID not found in response');
       }
 
-      // Store authentication data
+      
       localStorage.setItem('token', responseData.token);
       if (userId) {
         localStorage.setItem('userId', userId);
@@ -83,7 +81,7 @@ const Login = () => {
       let errorMessage = 'Login failed. Please try again.';
       
       if (error.response) {
-        // Try to extract error message from the response
+       
         try {
           const jsonStart = error.response.data.indexOf('{');
           const jsonEnd = error.response.data.lastIndexOf('}') + 1;
