@@ -25,7 +25,7 @@ const Routess = () => {
               <Route path="/" element={<Workouts/>} />
               <Route path="/Nutrition" element={<Nutrition/>} />
               <Route path="/Workouts" element={<Workouts/>} />
-              <Route path="/Profile/:id" element={<Profile/>} />
+              <Route path="/Profile" element={<Profile/>} />
               <Route path="/AllExercise" element={<AllExercise/>} />
               <Route path="/Indetails/:id" element={<Indetails/>} />
               <Route path="/Progress" element={<Progress/>} />

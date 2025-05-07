@@ -30,7 +30,7 @@ const Navbar = () => {
             <span className="ml-3 text-xl font-bold text-orange-400 hidden sm:block">FitnessApp</span>
           </Link>
 
-          {/* Desktop Navigation */}
+       
           <div className="hidden md:flex space-x-8">
             {navLinks.map((link) => (
               <Link
@@ -43,7 +43,6 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Mobile menu button */}
           <div className="md:hidden">
             <button 
               onClick={toggleNav} 
@@ -56,7 +55,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Navigation */}
+   
       {navOpen && (
         <div className="md:hidden bg-gray-800 shadow-xl">  
           <div className="px-2 pt-2 pb-3 space-y-1">
