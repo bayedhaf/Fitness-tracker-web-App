@@ -11,7 +11,7 @@ const AllExercise = () => {
   useEffect(() => {
     const fetchExercise = async () => {
       try {
-        const response = await fetch('https://dummyjson.com/c/c88f-ea45-4f41-9f71');
+        const response = await fetch('http://localhost:8080/exercises.php');
         if (!response.ok) {
           throw new Error('Failed to fetch products');
         }

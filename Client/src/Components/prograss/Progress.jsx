@@ -16,7 +16,7 @@ const Progress= () => {
       try {
         setLoading(true);
         
-        const response = await fetch('https://dummyjson.com/c/9d60-56fe-47e6-8fe9');
+        const response = await fetch('http://localhost:8080/progress.php');
         
         if (!response.ok) {
           throw new Error('Failed to fetch progress data');

@@ -12,7 +12,7 @@ const Indetails = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`https://dummyjson.com/c/c88f-ea45-4f41-9f71/${id}`);
+        const response = await fetch(`http://localhost:8080/exercises_detail/${id}`);
         
         if (!response.ok) {
           throw new Error(`Failed to fetch (Status: ${response.status})`);
