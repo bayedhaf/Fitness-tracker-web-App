@@ -3,10 +3,7 @@ import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -27,67 +24,39 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post(
-        API_BASE_URL,
-        {
-          email: formData.email,
-          password: formData.password,
+      const response = await axios.post(API_BASE_URL, formData, {
+        headers: {
+          'Content-Type': 'application/json',
         },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      });
 
-      let responseData;
-      try {
-        const jsonStart = response.data.indexOf('{');
-        const jsonEnd = response.data.lastIndexOf('}') + 1;
-        responseData = JSON.parse(response.data.slice(jsonStart, jsonEnd));
-      } catch (Error) {
-        console.error('Failed to parse response:', response.data);
-        throw new Error('Invalid server response format');
-      }
+      const responseData = response.data;
 
-      if (!responseData.token) {
+      // Optional: Check if data is a string and try to parse
+      let data = typeof responseData === 'string' ? JSON.parse(responseData) : responseData;
+
+      if (!data.token) {
         throw new Error('Authentication token missing in response');
       }
 
-    
-      let userId;
-      if (responseData.data?.id) {
-        if (typeof responseData.data.id === 'object' && responseData.data.id.oid) {
-          userId = responseData.data.id.oid; 
-        } else {
-          userId = responseData.data.id; 
-        }
-      }
+      const userId = data?.data?.id?.oid || data?.data?.id;
 
-      if (!userId) {
-        console.warn('User ID not found in response');
-      }
+      localStorage.setItem('token', data.token);
+      if (userId) localStorage.setItem('userId', userId);
 
-      
-      localStorage.setItem('token', responseData.token);
-      if (userId) {
-        localStorage.setItem('userId', userId);
-      }
-
-      setSuccess('Login successful! Redirecting to dashboard...');
+      setSuccess('Login successful! Redirecting...');
       setTimeout(() => navigate('/dashboard'), 1000);
-
     } catch (error) {
       let errorMessage = 'Login failed. Please try again.';
-      
-      if (error.response) {
-       
+
+      if (error.response?.data) {
         try {
-          const jsonStart = error.response.data.indexOf('{');
-          const jsonEnd = error.response.data.lastIndexOf('}') + 1;
-          const errorData = JSON.parse(error.response.data.slice(jsonStart, jsonEnd));
-          errorMessage = errorData.message || errorMessage;
-        } catch (error) {
+          const err = typeof error.response.data === 'string'
+            ? JSON.parse(error.response.data)
+            : error.response.data;
+
+          errorMessage = err.message || errorMessage;
+        } catch {
           errorMessage = `Server error: ${error.response.status}`;
         }
       } else if (error.message) {
@@ -108,28 +77,17 @@ const Login = () => {
         <div className="p-8">
           <h2 className="text-3xl font-bold text-white mb-6 text-center">Login</h2>
 
-          {error && (
-            <div className="mb-4 p-3 bg-red-500 text-white rounded-lg">
-              {error}
-            </div>
-          )}
-
-          {success && (
-            <div className="mb-4 p-3 bg-green-500 text-white rounded-lg">
-              {success}
-            </div>
-          )}
+          {error && <div className="mb-4 p-3 bg-red-500 text-white rounded-lg">{error}</div>}
+          {success && <div className="mb-4 p-3 bg-green-500 text-white rounded-lg">{success}</div>}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-gray-300 mb-2">
-                Email
-              </label>
+              <label htmlFor="email" className="block text-gray-300 mb-2">Email</label>
               <input
                 id="email"
                 type="email"
                 value={formData.email}
-                onChange={(e) => setFormData({...formData, email: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className="w-full px-4 py-3 bg-gray-700 rounded-lg text-white"
                 required
                 disabled={isLoading}
@@ -137,14 +95,12 @@ const Login = () => {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-gray-300 mb-2">
-                Password
-              </label>
+              <label htmlFor="password" className="block text-gray-300 mb-2">Password</label>
               <input
                 id="password"
                 type="password"
                 value={formData.password}
-                onChange={(e) => setFormData({...formData, password: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 className="w-full px-4 py-3 bg-gray-700 rounded-lg text-white"
                 required
                 disabled={isLoading}
@@ -154,9 +110,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-full py-3 rounded-lg text-white font-bold ${
-                isLoading ? 'bg-gray-500' : 'bg-orange-500 hover:bg-orange-600'
-              }`}
+              className={`w-full py-3 rounded-lg text-white font-bold ${isLoading ? 'bg-gray-500' : 'bg-orange-500 hover:bg-orange-600'}`}
             >
               {isLoading ? 'Processing...' : 'Login'}
             </button>
@@ -164,9 +118,7 @@ const Login = () => {
 
           <p className="text-center text-gray-300 mt-6">
             Don't have an account?{' '}
-            <Link to="/register" className="text-orange-400 hover:underline">
-              Register
-            </Link>
+            <Link to="/register" className="text-orange-400 hover:underline">Register</Link>
           </p>
         </div>
       </div>

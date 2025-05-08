@@ -27,7 +27,7 @@ const Contact = () => {
         setSubmitStatus(null);
 
         try {
-            const response = await fetch('END POINT', {
+            const response = await fetch('http://localhost:8080/contact.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
